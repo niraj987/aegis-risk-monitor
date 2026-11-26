@@ -1,0 +1,79 @@
+name: aegis-risk-monitor
+
+x-risk-environment: &risk-environment
+  DATA_DIR: /data
+  DATA_SOURCE: ${DATA_SOURCE:-auto}
+  HISTORY_DAYS: ${HISTORY_DAYS:-756}
+  PORTFOLIO_VALUE: ${PORTFOLIO_VALUE:-1000000}
+  MONITOR_INTERVAL_SECONDS: ${MONITOR_INTERVAL_SECONDS:-900}
+  SCHEDULER_ENABLED: "true"
+  ALLOWED_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+  OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+
+services:
+  api:
+    build:
+      context: ./server
+    image: aegis-risk-api:latest
+    container_name: aegis-api
+    environment: *risk-environment
+    ports:
+      - "4000:4000"
+    volumes:
+      - risk_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 25s
+      retries: 3
+
+  web:
+    build:
+      context: ./web
+      args:
+        API_URL: http://api:4000
+    image: aegis-risk-web:latest
+    container_name: aegis-web
+    environment:
+      API_URL: http://api:4000
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  # One containerized monitoring run against the same SQLite volume, then exit.
+  #   docker compose run --rm cycle
+  cycle:
+    profiles: ["jobs"]
+    build:
+      context: ./server
+    image: aegis-risk-api:latest
+    environment:
+      <<: *risk-environment
+      SCHEDULER_ENABLED: "false"
+    volumes:
+      - risk_data:/data
+    command: ["node", "src/index.js", "run"]
+
+volumes:
+  risk_data:
+    name: aegis_risk_data

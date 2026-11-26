@@ -1,0 +1,21 @@
+# Core web layer
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
+pydantic>=2.6,<3.0
+
+# Quantitative risk engine
+numpy>=1.26,<3.0
+pandas>=2.1,<4.0
+scipy>=1.11,<2.0
+scikit-learn>=1.4,<2.0
+
+# Market data (optional at runtime: the app falls back to a deterministic
+# synthetic feed when there is no network access)
+yfinance>=0.2.40,<1.0
+
+# Scheduling and outbound LLM calls
+APScheduler>=3.10,<4.0
+httpx>=0.27,<1.0
+
+# Tests
+pytest>=8.0,<9.0

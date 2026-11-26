@@ -1,0 +1,16 @@
+.git/
+.github/
+.freebuff/
+legacy/
+node_modules/
+**/node_modules/
+**/.next/
+**/dist/
+data/
+**/data/
+.env
+.env.*
+!.env.example
+*.sqlite3
+*.db
+*.log

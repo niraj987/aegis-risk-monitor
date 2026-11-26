@@ -1,0 +1,37 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Runtime data (SQLite database + cached market prices)
+data/
+server/data/
+*.sqlite3
+*.db
+!data/.gitkeep
+
+# Node / Next.js
+node_modules/
+.next/
+web/.next/
+web/out/
+dist/
+*.local
+
+# Freebuff workspace metadata
+.freebuff/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local logs
+*.log
