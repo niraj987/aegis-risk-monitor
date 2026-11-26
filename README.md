@@ -3,7 +3,7 @@
 Near-real-time portfolio risk monitoring with an explainable, human-in-the-loop workflow.
 One Node runtime: an **Express** risk API, a **Next.js** dashboard, and a SQLite audit trail.
 
-![Aegis dashboard](docs/screenshots/dashboard.png)
+ 
 
 ## What it does
 
@@ -20,7 +20,7 @@ One Node runtime: an **Express** risk API, a **Next.js** dashboard, and a SQLite
 
 ## Screenshots
 
-![Scenario stress test and review queue](docs/screenshots/scenarios.png)
+ 
 
 ## Stack
 
